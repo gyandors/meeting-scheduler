@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Schedule Meeting</title>
+    <link rel="stylesheet" href="/index.css" />
+  </head>
+  <body>
+    <div class="overlay" id="overlay">
+      <form class="form-control" action="/schedule-meeting" method="post">
+        <div>
+          <label for="name">Name</label>
+          <input type="text" name="name" id="name" />
+        </div>
+        <div>
+          <label for="email">Email</label>
+          <input type="email" name="email" id="email" />
+        </div>
+        <input type="hidden" name="meetId" value="<%= meeting.id %>" />
+        <input type="hidden" name="link" value="<%= meeting.link %>" />
+        <input type="hidden" name="time" value="<%= meeting.time %>" />
+        <div class="form-action">
+          <button class="submit btn" type="submit">Book Slot</button>
+          <a class="cancel btn" href="/"> Cancel </a>
+        </div>
+      </form>
+    </div>
+    <main>
+      <section class="meeting-section">
+        <h3 class="heading">Available Slots</h3>
+        <ul class="meeting-list">
+          <% for( let meeting of meetings ) { if (meeting.slots > 0) { %>
+          <li>
+            <a class="meeting-item" href="/meeting/<%= meeting.id %>">
+              <b><%= meeting.time %></b>
+              <p><%= meeting.slots %> Slots Available</p>
+            </a>
+          </li>
+          <% } } %>
+        </ul>
+      </section>
+      <section class="schedules-section">
+        <h3 class="heading">Scheduled Meetings</h3>
+        <% if (schedules.length > 0) { %>
+        <ul class="schedule-list">
+          <% for( let schedule of schedules ) { %>
+          <li class="schedule-item">
+            <h3>Hi <%= schedule.name %>,</h3>
+            <p>
+              Please join the meeting by clicking on this link
+              <a href="<%= schedule.link %>" target="_blank">
+                <%= schedule.link %>
+              </a>
+
+              <b>at <%= schedule.time %></b>
+            </p>
+            <form action="/cancel-meeting" method="post">
+              <input
+                type="hidden"
+                name="meetId"
+                value="<%= schedule.meetingId %>"
+              />
+              <input type="hidden" name="schedId" value="<%= schedule.id %>" />
+              <button class="btn cancel" type="submit">Cancel</button>
+            </form>
+          </li>
+          <% } %>
+        </ul>
+        <% } else { %>
+        <p style="text-align: center; color: red">
+          No upcoming meetings available.
+        </p>
+        <% }%>
+      </section>
+    </main>
+  </body>
+</html>
